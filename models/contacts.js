@@ -1,50 +1,30 @@
-const fs = require("node:fs/promises");
-const path = require("node:path");
-const { randomUUID } = require("node:crypto");
+const { model } = require("mongoose");
+const { contactsDbSchema } = require("../schemas");
 
-const pathToContacts = path.join(__dirname, "contacts.json");
+const Contact = model("contact", contactsDbSchema);
 
 const listContacts = async () => {
-  return JSON.parse(await fs.readFile(pathToContacts, "utf-8"));
+  return await Contact.find();
 };
 
 const getContactById = async (contactId) => {
-  const contacts = await listContacts();
-  return contacts.find((contact) => contact.id === contactId) || null;
+  return Contact.findById(contactId);
 };
 
 const removeContact = async (contactId) => {
-  const contacts = await listContacts();
-  const index = contacts.findIndex((contact) => contact.id === contactId);
-
-  if (index === -1) return null;
-
-  const [result] = contacts.splice(index, 1);
-  await fs.writeFile(pathToContacts, JSON.stringify(contacts));
-  return result;
+  return Contact.findByIdAndRemove(contactId);
 };
 
 const addContact = async (body) => {
-  const contacts = await listContacts();
-  const newContact = { id: randomUUID(), ...body };
-  contacts.push(newContact);
-  await fs.writeFile(pathToContacts, JSON.stringify(contacts));
-  return newContact;
+  return Contact.create(body);
 };
 
 const updateContact = async (contactId, body) => {
-  const contacts = await listContacts();
-  const index = contacts.findIndex((contact) => contact.id === contactId);
-
-  if (index === -1) return null;
-
-  const newContact = { id: contactId, ...body };
-  contacts[index] = newContact;
-  await fs.writeFile(pathToContacts, JSON.stringify(contacts));
-  return newContact;
+  return Contact.findByIdAndUpdate(contactId, body, { new: true });
 };
 
 module.exports = {
+  Contact,
   listContacts,
   getContactById,
   removeContact,

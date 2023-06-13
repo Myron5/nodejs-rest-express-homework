@@ -24,4 +24,10 @@ const updateSchema = Joi.object({
   }),
 });
 
-module.exports = { addSchema, updateSchema };
+const updateFavouriteSchema = Joi.object({
+  favourite: Joi.boolean().required().messages({
+    "any.required": "missing field favorite",
+  }),
+});
+
+module.exports = { addSchema, updateSchema, updateFavouriteSchema };
