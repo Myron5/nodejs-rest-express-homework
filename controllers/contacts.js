@@ -41,7 +41,7 @@ const updateById = async (req, res) => {
   res.json(result);
 };
 
-const updateFavouriteById = async (req, res) => {
+const updateFavoriteById = async (req, res) => {
   const { contactId } = req.params;
   const result = await contacts.updateContact(contactId, req.body);
   if (!result) {
@@ -56,5 +56,5 @@ module.exports = {
   deleteById: ctrlWrapper(deleteById),
   add: ctrlWrapper(add),
   updateById: ctrlWrapper(updateById),
-  updateFavouriteById: ctrlWrapper(updateFavouriteById),
+  updateFavoriteById: ctrlWrapper(updateFavoriteById),
 };

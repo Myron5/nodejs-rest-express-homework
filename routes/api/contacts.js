@@ -4,7 +4,7 @@ const { isValidId, validateBody } = require("../../middlewares");
 const {
   addSchema,
   updateSchema,
-  updateFavouriteSchema,
+  updateFavoriteSchema,
 } = require("../../schemas");
 
 const router = express.Router();
@@ -27,8 +27,8 @@ router.put(
 router.patch(
   "/:contactId/favorite",
   isValidId,
-  validateBody(updateFavouriteSchema),
-  ctrl.updateFavouriteById
+  validateBody(updateFavoriteSchema),
+  ctrl.updateFavoriteById
 );
 
 module.exports = router;
