@@ -1,5 +1,5 @@
 const Joi = require("joi");
-const { phoneRegexTwo, emailRegex } = require("../constants");
+const { phoneRegexOne, phoneRegexTwo, emailRegex } = require("../constants");
 
 const addSchema = Joi.object({
   name: Joi.string().min(3).max(20).required().messages({
@@ -11,10 +11,13 @@ const addSchema = Joi.object({
     "any.required": "missing required email field",
     "string.pattern.base": "invalid email",
   }),
-  phone: Joi.string().pattern(phoneRegexTwo).required().messages({
-    "any.required": "missing required phone field",
-    "string.pattern.base": "phone number is invalid",
-  }),
+  phone: Joi.string()
+    .pattern(phoneRegexOne, phoneRegexTwo)
+    .required()
+    .messages({
+      "any.required": "missing required phone field",
+      "string.pattern.base": "phone number is invalid",
+    }),
 });
 
 const updateSchema = Joi.object({
@@ -27,10 +30,14 @@ const updateSchema = Joi.object({
     "any.required": "missing fields",
     "string.pattern.base": "invalid email",
   }),
-  phone: Joi.string().pattern(phoneRegexTwo).messages({
-    "any.required": "missing fields",
-    "string.pattern.base": "phone number is invalid",
-  }),
+  phone: Joi.string()
+    .pattern(phoneRegexOne)
+    .pattern(phoneRegexTwo)
+    .required()
+    .messages({
+      "any.required": "missing fields",
+      "string.pattern.base": "phone number is invalid",
+    }),
 });
 
 const updateFavoriteSchema = Joi.object({

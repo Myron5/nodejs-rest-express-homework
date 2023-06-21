@@ -1,7 +1,3 @@
-const mixRegexp = (...regexps) => {
-  return "(?:" + regexps.join(")|(?:") + ")";
-};
-
 const phoneRegexOne =
   /^\+\s?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/;
 
@@ -19,7 +15,6 @@ const passwordRegex =
 const emailRegex = /^\S+@\S+\.\S+$/;
 
 module.exports = {
-  mixRegexp,
   phoneRegexOne,
   phoneRegexTwo,
   passwordRegex,

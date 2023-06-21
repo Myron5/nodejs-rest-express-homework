@@ -1,6 +1,6 @@
 const { Schema } = require("mongoose");
 const { handleMongooseError } = require("../helpers");
-const { emailRegex, phoneRegex1, phoneRegex2 } = require("../constants");
+const { emailRegex, phoneRegexOne, phoneRegexTwo } = require("../constants");
 
 const schema = {
   name: {
@@ -12,13 +12,11 @@ const schema = {
   email: {
     type: String,
     match: emailRegex,
-    unique: true,
     required: true,
   },
   phone: {
     type: String,
-    match: [phoneRegex1, phoneRegex2],
-    unique: true,
+    match: [phoneRegexOne, phoneRegexTwo],
     required: true,
   },
   favorite: {
