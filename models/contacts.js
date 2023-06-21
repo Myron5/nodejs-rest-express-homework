@@ -24,7 +24,6 @@ const updateContact = async (contactId, body) => {
 };
 
 module.exports = {
-  Contact,
   listContacts,
   getContactById,
   removeContact,
