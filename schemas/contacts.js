@@ -1,5 +1,10 @@
 const Joi = require("joi");
-const { phoneRegexOne, phoneRegexTwo, emailRegex } = require("../constants");
+const {
+  mixToRegexp,
+  phoneRegexOne,
+  phoneRegexTwo,
+  emailRegex,
+} = require("../constants");
 
 const addSchema = Joi.object({
   name: Joi.string().min(3).max(20).required().messages({
@@ -12,7 +17,7 @@ const addSchema = Joi.object({
     "string.pattern.base": "invalid email",
   }),
   phone: Joi.string()
-    .pattern(phoneRegexOne, phoneRegexTwo)
+    .pattern(mixToRegexp(phoneRegexOne, phoneRegexTwo))
     .required()
     .messages({
       "any.required": "missing required phone field",
@@ -31,8 +36,7 @@ const updateSchema = Joi.object({
     "string.pattern.base": "invalid email",
   }),
   phone: Joi.string()
-    .pattern(phoneRegexOne)
-    .pattern(phoneRegexTwo)
+    .pattern(mixToRegexp(phoneRegexOne, phoneRegexTwo))
     .required()
     .messages({
       "any.required": "missing fields",

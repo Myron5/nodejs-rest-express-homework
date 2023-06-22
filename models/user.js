@@ -12,4 +12,12 @@ const addUser = async (user) => {
   return newUser;
 };
 
-module.exports = { listUsers, addUser };
+const checkUser = async (user) => {
+  const list = await listUsers();
+  const isVerified = list.some(
+    ({ email, password }) => user.email === email && user.password === password
+  );
+  return isVerified;
+};
+
+module.exports = { listUsers, addUser, checkUser };

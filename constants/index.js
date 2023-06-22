@@ -1,5 +1,5 @@
 const {
-  mixRegexp,
+  mixToRegexp,
   phoneRegexOne,
   phoneRegexTwo,
   passwordRegex,
@@ -7,7 +7,7 @@ const {
 } = require("./regex");
 
 module.exports = {
-  mixRegexp,
+  mixToRegexp,
   phoneRegexOne,
   phoneRegexTwo,
   passwordRegex,

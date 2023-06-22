@@ -7,7 +7,7 @@ const isUniqueEmail = async (req, _, next) => {
   console.log(list);
   const isInList = list.some((user) => user.email === email);
   if (isInList) {
-    next(HttpError(404, `${email} email already registered`));
+    next(HttpError(404, `${email} has already been registered`));
   }
   next();
 };
