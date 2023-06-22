@@ -4,10 +4,6 @@ const { createHashPassword, compareHashPassword } = require("../helpers");
 
 const User = model("user", userDbSchema);
 
-const listUsers = async () => {
-  return await User.find();
-};
-
 const checkEmail = async (email) => {
   const isFound = await User.findOne({ email });
   const isUnique = !isFound;
@@ -30,7 +26,7 @@ const checkUser = async ({ email, password }) => {
 };
 
 module.exports = {
-  listUsers,
+  User,
   checkEmail,
   addUser,
   checkUser,

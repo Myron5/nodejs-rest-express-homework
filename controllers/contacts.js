@@ -1,8 +1,9 @@
 const contacts = require("../models/contacts.js");
 const { HttpError, ctrlWrapper } = require("../helpers");
 
-const getAll = async (_, res) => {
-  const result = await contacts.listContacts();
+const getAll = async (req, res) => {
+  const { _id } = req.user;
+  const result = await contacts.listContacts(_id);
   res.json(result);
 };
 
@@ -25,7 +26,8 @@ const deleteById = async (req, res) => {
 };
 
 const add = async (req, res) => {
-  const result = await contacts.addContact(req.body);
+  const { _id } = req.user;
+  const result = await contacts.addContact(_id, req.body);
   if (!result) {
     throw HttpError(404);
   }

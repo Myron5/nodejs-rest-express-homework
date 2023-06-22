@@ -5,6 +5,7 @@ const {
   createHashPassword,
   compareHashPassword,
 } = require("./createHashPassword");
+const authWrapper = require("./authWrapper");
 
 module.exports = {
   HttpError,
@@ -12,4 +13,5 @@ module.exports = {
   handleMongooseError,
   createHashPassword,
   compareHashPassword,
+  authWrapper,
 };

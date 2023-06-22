@@ -1,5 +1,8 @@
+const jwt = require("jsonwebtoken");
 const { addUser, checkUser } = require("../models/user");
 const { HttpError, ctrlWrapper } = require("../helpers");
+
+const { SECRET_JWT_KEY } = process.env;
 
 const register = async (req, res) => {
   const { email, subscription } = await addUser(req.body);
@@ -11,8 +14,8 @@ const login = async (req, res) => {
   if (!user) {
     throw HttpError(401, "Email or password is wrong");
   }
-  const { email, subscription } = user;
-  const token = "XXXXXXXXXXXX.YYYYYYYYYYYYYYYYYYYYYY.ZZZZZZZZZZZZZZZ";
+  const { _id, email, subscription } = user;
+  const token = jwt.sign({ _id }, SECRET_JWT_KEY, { expiresIn: "24h" });
   res.json({ token, user: { email, subscription } });
 };
 
