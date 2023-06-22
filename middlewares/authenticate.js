@@ -18,7 +18,7 @@ const authenticate = async (req, res, next) => {
   }
 
   const user = await User.findById(_id);
-  if (!user /* || !user.token || user.token !== token */) {
+  if (!user || !user.token || user.token !== token) {
     throw new Error();
   }
 

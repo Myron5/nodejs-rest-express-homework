@@ -25,9 +25,14 @@ const checkUser = async ({ email, password }) => {
   return user;
 };
 
+const updateJwtToken = async (id, token) => {
+  await User.findByIdAndUpdate(id, { token });
+};
+
 module.exports = {
   User,
   checkEmail,
   addUser,
   checkUser,
+  updateJwtToken,
 };
