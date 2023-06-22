@@ -17,12 +17,12 @@ const flag = Object.freeze({
   UPDATE: "update",
 });
 
-const flagSchema = (flag) => {
+const flagSchema = (flagArg) => {
   let nameMessage;
   let emailMessage;
   let phoneMessage;
 
-  switch (flag) {
+  switch (flagArg) {
     case flag.ADD:
       nameMessage = "missing required name field";
       emailMessage = "missing required email field";
@@ -37,7 +37,7 @@ const flagSchema = (flag) => {
       return null;
   }
 
-  Joi.object({
+  const schema = Joi.object({
     name: Joi.string().empty().min(3).max(20).required().messages({
       "any.empty": "name cannot be empty",
       "string.min": "name is too short",
@@ -59,6 +59,8 @@ const flagSchema = (flag) => {
         "any.required": phoneMessage,
       }),
   });
+
+  return schema;
 };
 
 const updateFavoriteSchema = Joi.object({

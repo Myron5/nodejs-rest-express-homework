@@ -1,5 +1,6 @@
 const { model } = require("mongoose");
 const { userDbSchema } = require("../schemas");
+const { createHashPassword, compareHashPassword } = require("../helpers");
 
 const User = model("user", userDbSchema);
 
@@ -14,16 +15,18 @@ const checkEmail = async (email) => {
 };
 
 const addUser = async (user) => {
-  const newUser = await User.create(user);
+  const password = await createHashPassword(user.password);
+  const newUser = await User.create({ ...user, password });
   return newUser;
 };
 
-const checkUser = async (user) => {
-  const list = await listUsers();
-  const isVerified = list.some(
-    ({ email, password }) => user.email === email && user.password === password
-  );
-  return isVerified;
+const checkUser = async ({ email, password }) => {
+  const user = await User.findOne({ email });
+  const compared = await compareHashPassword(password, user.password);
+  if (!user || !compared) {
+    return null;
+  }
+  return user;
 };
 
 module.exports = {

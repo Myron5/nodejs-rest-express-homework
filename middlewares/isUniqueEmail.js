@@ -5,7 +5,7 @@ const isUniqueEmail = async (req, _, next) => {
   const { email } = req.body;
   const isUnique = await checkEmail(email);
   if (!isUnique) {
-    next(HttpError(404, `${email} has already been registered`));
+    next(HttpError(409, "Email in use"));
   }
   next();
 };

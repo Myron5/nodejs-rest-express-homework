@@ -2,16 +2,18 @@ const { addUser, checkUser } = require("../models/user");
 const { HttpError, ctrlWrapper } = require("../helpers");
 
 const register = async (req, res) => {
-  const { email, name } = await addUser(req.body);
-  res.status(201).json({ email, name });
+  const { email, subscription } = await addUser(req.body);
+  res.status(201).json({ user: { email, subscription } });
 };
 
 const login = async (req, res) => {
-  const isVerified = await checkUser(req.body);
-  if (!isVerified) {
-    throw HttpError(401);
+  const user = await checkUser(req.body);
+  if (!user) {
+    throw HttpError(401, "Email or password is wrong");
   }
-  res.json({ isVerified });
+  const { email, subscription } = user;
+  const token = "XXXXXXXXXXXX.YYYYYYYYYYYYYYYYYYYYYY.ZZZZZZZZZZZZZZZ";
+  res.json({ token, user: { email, subscription } });
 };
 
 module.exports = {
