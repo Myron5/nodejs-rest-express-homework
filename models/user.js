@@ -7,6 +7,12 @@ const listUsers = async () => {
   return await User.find();
 };
 
+const checkEmail = async (email) => {
+  const isFound = await User.findOne({ email });
+  const isUnique = !isFound;
+  return isUnique;
+};
+
 const addUser = async (user) => {
   const newUser = await User.create(user);
   return newUser;
@@ -20,4 +26,9 @@ const checkUser = async (user) => {
   return isVerified;
 };
 
-module.exports = { listUsers, addUser, checkUser };
+module.exports = {
+  listUsers,
+  checkEmail,
+  addUser,
+  checkUser,
+};

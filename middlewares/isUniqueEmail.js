@@ -1,12 +1,10 @@
-const { listUsers } = require("../models/user");
+const { checkEmail } = require("../models/user");
 const { HttpError } = require("../helpers");
 
 const isUniqueEmail = async (req, _, next) => {
   const { email } = req.body;
-  const list = await listUsers();
-  console.log(list);
-  const isInList = list.some((user) => user.email === email);
-  if (isInList) {
+  const isUnique = await checkEmail(email);
+  if (!isUnique) {
     next(HttpError(404, `${email} has already been registered`));
   }
   next();

@@ -3,7 +3,7 @@ const { HttpError, ctrlWrapper } = require("../helpers");
 
 const register = async (req, res) => {
   const { email, name } = await addUser(req.body);
-  res.json({ email, name });
+  res.status(201).json({ email, name });
 };
 
 const login = async (req, res) => {

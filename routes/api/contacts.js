@@ -1,11 +1,7 @@
 const express = require("express");
 const ctrl = require("../../controllers/contacts");
 const { isValidId, validateBody } = require("../../middlewares");
-const {
-  addSchema,
-  updateSchema,
-  updateFavoriteSchema,
-} = require("../../schemas");
+const { flag, flagSchema, updateFavoriteSchema } = require("../../schemas");
 
 const router = express.Router();
 
@@ -15,12 +11,12 @@ router.get("/:contactId", isValidId, ctrl.getById);
 
 router.delete("/:contactId", isValidId, ctrl.deleteById);
 
-router.post("/", validateBody(addSchema), ctrl.add);
+router.post("/", validateBody(flagSchema(flag.ADD)), ctrl.add);
 
 router.put(
   "/:contactId",
   isValidId,
-  validateBody(updateSchema),
+  validateBody(flagSchema(flag.UPDATE)),
   ctrl.updateById
 );
 
