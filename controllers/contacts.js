@@ -3,7 +3,9 @@ const { HttpError, ctrlWrapper } = require("../helpers");
 
 const getAll = async (req, res) => {
   const { _id } = req.user;
-  const result = await contacts.listContacts(_id);
+  const { page = 1, limit = 10 } = req.query;
+  const skip = (page - 1) * limit;
+  const result = await contacts.listContacts(_id, skip, limit);
   res.json(result);
 };
 

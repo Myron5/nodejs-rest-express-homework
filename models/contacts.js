@@ -3,8 +3,8 @@ const { contactsDbSchema } = require("../schemas");
 
 const Contact = model("contact", contactsDbSchema);
 
-const listContacts = async (owner) => {
-  return await Contact.find({ owner });
+const listContacts = async (owner, skip, limit) => {
+  return await Contact.find({ owner }, "", { skip, limit });
 };
 
 const getContactById = async (contactId) => {
