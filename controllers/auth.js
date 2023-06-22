@@ -19,7 +19,13 @@ const login = async (req, res) => {
   res.json({ token, user: { email, subscription } });
 };
 
+const current = (req, res) => {
+  const { email, subscription } = req.user;
+  res.json({ email, subscription });
+};
+
 module.exports = {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
+  current: ctrlWrapper(current),
 };
