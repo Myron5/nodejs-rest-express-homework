@@ -1,6 +1,7 @@
-const jwt = require("jsonwebtoken");
-const { addUser, checkUser, updateJwtToken } = require("../models/user");
-const { HttpError, ctrlWrapper } = require("../helpers");
+const jwt = require('jsonwebtoken');
+
+const { addUser, checkUser, updateJwtToken, updateAvatar } = require('../models/user');
+const { HttpError, ctrlWrapper } = require('../helpers');
 
 const { SECRET_JWT_KEY } = process.env;
 
@@ -12,10 +13,10 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   const user = await checkUser(req.body);
   if (!user) {
-    throw HttpError(401, "Email or password is wrong");
+    throw HttpError(401, 'Email or password is wrong');
   }
   const { _id, email, subscription } = user;
-  const token = jwt.sign({ _id }, SECRET_JWT_KEY, { expiresIn: "24h" });
+  const token = jwt.sign({ _id }, SECRET_JWT_KEY, { expiresIn: '24h' });
 
   await updateJwtToken(_id, token);
   res.json({ token, user: { email, subscription } });
@@ -27,8 +28,15 @@ const current = (req, res) => {
 };
 
 const logout = async (req, res) => {
-  await updateJwtToken(req.user._id, "");
+  await updateJwtToken(req.user._id, '');
   res.status(204).send();
+};
+
+const avatars = async (req, res) => {
+  const { _id } = req.user;
+  const { path: tmpUpload, ext } = req.file;
+  const avatarURL = await updateAvatar(_id, tmpUpload, ext);
+  res.json({ avatarURL });
 };
 
 module.exports = {
@@ -36,4 +44,5 @@ module.exports = {
   login: ctrlWrapper(login),
   current: ctrlWrapper(current),
   logout: ctrlWrapper(logout),
+  avatars: ctrlWrapper(avatars),
 };

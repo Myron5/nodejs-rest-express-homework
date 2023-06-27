@@ -1,7 +1,7 @@
-const { flag, flagSchema, updateFavoriteSchema } = require("./contacts");
-const contactsDbSchema = require("./contactsDbSchema");
-const { registerSchema, loginSchema } = require("./users");
-const userDbSchema = require("./userDbSchema");
+const { flag, flagSchema, updateFavoriteSchema } = require('./contacts');
+const contactsDbSchema = require('./contactsDbSchema');
+const { registerLoginSchema } = require('./users');
+const userDbSchema = require('./userDbSchema');
 
 module.exports = {
   flag,
@@ -10,6 +10,5 @@ module.exports = {
   contactsDbSchema,
 
   userDbSchema,
-  registerSchema,
-  loginSchema,
+  registerLoginSchema,
 };
