@@ -3,7 +3,7 @@ const gravatar = require('gravatar');
 const path = require('node:path');
 
 const { userDbSchema } = require('../schemas');
-const { createHashPassword, compareHashPassword, fsRename } = require('../helpers');
+const { createHashPassword, compareHashPassword, fsRename, loadToCloudinary } = require('../helpers');
 
 const User = model('user', userDbSchema);
 const avatarsDir = path.join(__dirname, '../', 'public', 'avatars');
@@ -43,6 +43,15 @@ const updateAvatar = async (id, tmpUpload, ext) => {
   return avatarURL;
 };
 
+const updateAvatarCloud = async (id, tmpUpload) => {
+  const avatarURL = await loadToCloudinary(id, tmpUpload);
+  if (!avatarURL) {
+    return null;
+  }
+  await User.findByIdAndUpdate(id, { avatarURL });
+  return avatarURL;
+};
+
 module.exports = {
   User,
   checkEmail,
@@ -50,4 +59,5 @@ module.exports = {
   checkUser,
   updateJwtToken,
   updateAvatar,
+  updateAvatarCloud,
 };

@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const { addUser, checkUser, updateJwtToken, updateAvatar } = require('../models/user');
+const { addUser, checkUser, updateJwtToken, updateAvatar, updateAvatarCloud } = require('../models/user');
 const { HttpError, ctrlWrapper } = require('../helpers');
 
 const { SECRET_JWT_KEY } = process.env;
@@ -39,10 +39,21 @@ const avatars = async (req, res) => {
   res.json({ avatarURL });
 };
 
+const avatarsCloud = async (req, res) => {
+  const { _id } = req.user;
+  const { path: tmpUpload } = req.file;
+  const avatarURL = await updateAvatarCloud(_id, tmpUpload);
+  if (!avatarURL) {
+    throw new HttpError(502);
+  }
+  res.json({ avatarURL });
+};
+
 module.exports = {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
   current: ctrlWrapper(current),
   logout: ctrlWrapper(logout),
   avatars: ctrlWrapper(avatars),
+  avatarsCloud: ctrlWrapper(avatarsCloud),
 };

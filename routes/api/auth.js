@@ -14,6 +14,6 @@ router.get('/current', authenticate, ctrl.current);
 
 router.post('/logout', authenticate, ctrl.logout);
 
-router.patch('/avatars', authenticate, upload.single('avatar'), ctrl.avatars);
+router.patch('/avatars', authenticate, upload.single('avatar'), ctrl.avatarsCloud);
 
 module.exports = router;

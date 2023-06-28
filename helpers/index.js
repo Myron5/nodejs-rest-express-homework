@@ -4,6 +4,7 @@ const handleMongooseError = require('./handleMongooseError');
 const { createHashPassword, compareHashPassword } = require('./createHashPassword');
 const authWrapper = require('./authWrapper');
 const fsRename = require('./fsRename');
+const loadToCloudinary = require('./loadToCloudinary');
 
 module.exports = {
   HttpError,
@@ -13,4 +14,5 @@ module.exports = {
   compareHashPassword,
   authWrapper,
   fsRename,
+  loadToCloudinary,
 };
