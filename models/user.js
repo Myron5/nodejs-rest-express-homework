@@ -3,7 +3,7 @@ const gravatar = require('gravatar');
 const path = require('node:path');
 
 const { userDbSchema } = require('../schemas');
-const { createHashPassword, compareHashPassword, fsRename, loadToCloudinary } = require('../helpers');
+const { compareHashPassword, fsRename, loadToCloudinary } = require('../helpers');
 
 const User = model('user', userDbSchema);
 const avatarsDir = path.join(__dirname, '../', 'public', 'avatars');
@@ -15,9 +15,8 @@ const checkEmail = async email => {
 };
 
 const addUser = async user => {
-  const password = await createHashPassword(user.password);
   const avatarURL = gravatar.url(user.email);
-  const newUser = await User.create({ ...user, password, avatarURL });
+  const newUser = await User.create({ ...user, avatarURL });
   return newUser;
 };
 

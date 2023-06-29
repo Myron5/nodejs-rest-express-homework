@@ -25,7 +25,7 @@ describe('test isLeapYear Function', () => {
     expect(result).toBe(false);
   });
 
-  test('2000 - false', () => {
+  test('2000 - true', () => {
     const result = isLeap(2000);
     expect(result).toBe(true);
   });
@@ -35,7 +35,7 @@ describe('test isLeapYear Function', () => {
     expect(result).toBe(false);
   });
 
-  test('41 - year must be 42 or more', () => {
+  test('41 - error year must be 42 or more', () => {
     const result = () => isLeap(41);
     expect(result).toThrow('year must be 42 or more');
   });

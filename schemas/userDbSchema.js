@@ -1,5 +1,5 @@
 const { Schema } = require('mongoose');
-const { handleMongooseError } = require('../helpers');
+const { handleMongooseError, createHashPassword } = require('../helpers');
 const { passwordRegex, emailRegex } = require('../constants');
 
 const schema = {
@@ -34,7 +34,16 @@ const settings = {
   timestamps: true,
 };
 
+async function bindPasswordHash(next) {
+  if (!this.isModified('password')) {
+    return next();
+  }
+  this.password = await createHashPassword(this.password);
+  next();
+}
+
 const userDbSchema = new Schema(schema, settings);
 userDbSchema.post('save', handleMongooseError);
+userDbSchema.pre('save', bindPasswordHash);
 
 module.exports = userDbSchema;
