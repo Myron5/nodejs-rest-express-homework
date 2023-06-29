@@ -3,7 +3,7 @@ const gravatar = require('gravatar');
 const path = require('node:path');
 
 const { userDbSchema } = require('../schemas');
-const { compareHashPassword, fsRename, loadToCloudinary } = require('../helpers');
+const { fsRename, loadToCloudinary } = require('../helpers');
 
 const User = model('user', userDbSchema);
 const avatarsDir = path.join(__dirname, '../', 'public', 'avatars');
@@ -22,7 +22,7 @@ const addUser = async user => {
 
 const checkUser = async ({ email, password }) => {
   const user = await User.findOne({ email });
-  const compared = await compareHashPassword(password, user.password);
+  const compared = await user.checkPassword(password);
   if (!user || !compared) {
     return null;
   }

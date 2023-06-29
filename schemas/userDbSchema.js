@@ -1,5 +1,5 @@
 const { Schema } = require('mongoose');
-const { handleMongooseError, createHashPassword } = require('../helpers');
+const { handleMongooseError, createHashPassword, compareHashPassword } = require('../helpers');
 const { passwordRegex, emailRegex } = require('../constants');
 
 const schema = {
@@ -42,8 +42,13 @@ async function bindPasswordHash(next) {
   next();
 }
 
+async function bindPasswordCheck(candidate) {
+  return compareHashPassword(candidate, this.password);
+}
+
 const userDbSchema = new Schema(schema, settings);
 userDbSchema.post('save', handleMongooseError);
 userDbSchema.pre('save', bindPasswordHash);
+userDbSchema.methods.checkPassword = bindPasswordCheck;
 
 module.exports = userDbSchema;
