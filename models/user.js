@@ -1,11 +1,10 @@
-const { model } = require('mongoose');
-const gravatar = require('gravatar');
+const mongoose = require('mongoose');
 const path = require('node:path');
 
 const { userDbSchema } = require('../schemas');
-const { fsRename, loadToCloudinary } = require('../helpers');
+const { moveImage, loadToCloudinary } = require('../helpers');
 
-const User = model('user', userDbSchema);
+const User = mongoose.model('user', userDbSchema);
 const avatarsDir = path.join(__dirname, '../', 'public', 'avatars');
 
 const checkEmail = async email => {
@@ -15,8 +14,7 @@ const checkEmail = async email => {
 };
 
 const addUser = async user => {
-  const avatarURL = gravatar.url(user.email);
-  const newUser = await User.create({ ...user, avatarURL });
+  const newUser = await User.create(user);
   return newUser;
 };
 
@@ -36,7 +34,7 @@ const updateJwtToken = async (id, token) => {
 const updateAvatar = async (id, tmpUpload, ext) => {
   const filename = `${id}.${ext}`;
   const resultUpload = path.join(avatarsDir, filename);
-  await fsRename(tmpUpload, resultUpload);
+  await moveImage(tmpUpload, resultUpload);
   const avatarURL = `/avatars/${filename}`;
   await User.findByIdAndUpdate(id, { avatarURL });
   return avatarURL;

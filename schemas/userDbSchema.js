@@ -1,7 +1,12 @@
-const { Schema } = require('mongoose');
-const { handleMongooseError, createHashPassword, compareHashPassword } = require('../helpers');
-const { passwordRegex, emailRegex } = require('../constants');
+const mongoose = require('mongoose');
+const gravatar = require('gravatar');
 
+const { handleMongooseError, createHashPassword, compareHashPassword } = require('../helpers');
+const { passwordRegex, emailRegex, gravatarConfig, mongooseSchemaConfig } = require('../constants');
+
+/**
+ * Describes schema
+ */
 const schema = {
   password: {
     type: String,
@@ -25,16 +30,20 @@ const schema = {
   },
   avatarURL: {
     type: String,
-    required: true,
+    default: '',
   },
 };
 
-const settings = {
-  versionKey: false,
-  timestamps: true,
-};
+/**
+ * Mongoose middleware, used before creating or updaing user
+ */
+async function preSaveMiddleware(next) {
+  // For assigning first avatar to user (require gravatar)
+  if (this.isNew) {
+    this.avatarURL = gravatar.url(this.email, gravatarConfig);
+  }
 
-async function bindPasswordHash(next) {
+  // For hashing password before save
   if (!this.isModified('password')) {
     return next();
   }
@@ -42,13 +51,20 @@ async function bindPasswordHash(next) {
   next();
 }
 
-async function bindPasswordCheck(candidate) {
-  return compareHashPassword(candidate, this.password);
+/**
+ * Method for user (returned by our model)
+ */
+async function checkPassword(candidate) {
+  return await compareHashPassword(candidate, this.password);
 }
 
-const userDbSchema = new Schema(schema, settings);
+/**
+ * Creating schema
+ */
+const userDbSchema = new mongoose.Schema(schema, mongooseSchemaConfig);
+
+userDbSchema.pre('save', preSaveMiddleware);
 userDbSchema.post('save', handleMongooseError);
-userDbSchema.pre('save', bindPasswordHash);
-userDbSchema.methods.checkPassword = bindPasswordCheck;
+userDbSchema.methods.checkPassword = checkPassword;
 
 module.exports = userDbSchema;

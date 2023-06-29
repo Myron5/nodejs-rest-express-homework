@@ -3,7 +3,7 @@ const ctrlWrapper = require('./ctrlWrapper');
 const handleMongooseError = require('./handleMongooseError');
 const { createHashPassword, compareHashPassword } = require('./createHashPassword');
 const authWrapper = require('./authWrapper');
-const fsRename = require('./fsRename');
+const moveImage = require('./moveImage');
 const loadToCloudinary = require('./loadToCloudinary');
 
 module.exports = {
@@ -13,6 +13,6 @@ module.exports = {
   createHashPassword,
   compareHashPassword,
   authWrapper,
-  fsRename,
+  moveImage,
   loadToCloudinary,
 };

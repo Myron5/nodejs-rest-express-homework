@@ -1,13 +1,14 @@
-const { Schema } = require("mongoose");
-const { handleMongooseError } = require("../helpers");
-const { emailRegex, phoneRegexOne, phoneRegexTwo } = require("../constants");
+const { Schema } = require('mongoose');
+
+const { handleMongooseError } = require('../helpers');
+const { emailRegex, phoneRegexOne, phoneRegexTwo, mongooseSchemaConfig } = require('../constants');
 
 const schema = {
   name: {
     type: String,
     minlength: 3,
     maxlength: 20,
-    required: [true, "Set name for contact"],
+    required: [true, 'Set name for contact'],
   },
   email: {
     type: String,
@@ -25,17 +26,12 @@ const schema = {
   },
   owner: {
     type: Schema.Types.ObjectId,
-    ref: "user",
+    ref: 'user',
     required: true,
   },
 };
 
-const settings = {
-  versionKey: false,
-  timestamps: true,
-};
-
-const contactsDbSchema = new Schema(schema, settings);
-contactsDbSchema.post("save", handleMongooseError);
+const contactsDbSchema = new Schema(schema, mongooseSchemaConfig);
+contactsDbSchema.post('save', handleMongooseError);
 
 module.exports = contactsDbSchema;
