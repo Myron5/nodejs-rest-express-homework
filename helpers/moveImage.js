@@ -1,9 +1,11 @@
 const Jimp = require('jimp');
 const fs = require('node:fs/promises');
 
+const { jimpManipulations } = require('../constants');
+
 const moveImage = async (tmpUpload, resultUpload) => {
   const image = await Jimp.read(tmpUpload);
-  image.contain(250, 250).quality(75);
+  jimpManipulations(image);
   await image.writeAsync(resultUpload);
   await fs.unlink(tmpUpload);
 };

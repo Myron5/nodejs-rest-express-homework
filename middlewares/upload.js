@@ -1,19 +1,36 @@
 const multer = require('multer');
 const path = require('node:path');
 
+const { HttpError } = require('../helpers');
+const { limitFileAvatar } = require('../constants');
 const tempDir = path.join(__dirname, '../', 'tmp');
 
-const multerConfig = multer.diskStorage({
-  destination: tempDir,
-  filename: (_, file, cb) => {
-    const [__, ext] = file.mimetype.split('/');
-    file.ext = ext;
-    cb(null, file.originalname);
+const multerStorage = multer.diskStorage({
+  destination: callback => {
+    callback(null, tempDir);
+  },
+  filename: (req, file, callback) => {
+    const [_, extension] = file.mimetype.split('/');
+    const { _id } = req.user;
+    const newFileName = `${_id}.${extension}`;
+    callback(null, newFileName);
   },
 });
 
+const multerFilter = (req, file, callback) => {
+  if (file.mimetype.includes('image/')) {
+    callback(null, true);
+  } else {
+    callback(HttpError(400, 'Please, upload images only!'), false);
+  }
+};
+
 const upload = multer({
-  storage: multerConfig,
-});
+  storage: multerStorage,
+  fileFilter: multerFilter,
+  limits: {
+    size: limitFileAvatar,
+  },
+}).single('avatar');
 
 module.exports = upload;

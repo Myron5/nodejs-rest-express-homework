@@ -34,15 +34,15 @@ const logout = async (req, res) => {
 
 const avatars = async (req, res) => {
   const { _id } = req.user;
-  const { path: tmpUpload, ext } = req.file;
-  const avatarURL = await updateAvatar(_id, tmpUpload, ext);
+  const { path, filename } = req.file;
+  const avatarURL = await updateAvatar(_id, path, filename);
   res.json({ avatarURL });
 };
 
 const avatarsCloud = async (req, res) => {
   const { _id } = req.user;
-  const { path: tmpUpload } = req.file;
-  const avatarURL = await updateAvatarCloud(_id, tmpUpload);
+  const { path } = req.file;
+  const avatarURL = await updateAvatarCloud(_id, path);
   if (!avatarURL) {
     throw new HttpError(502);
   }
