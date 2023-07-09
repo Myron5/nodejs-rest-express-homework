@@ -1,4 +1,4 @@
-const handleMongooseError = (error, _, next) => {
+const handleMongooseError = (error, , next) => {
   const { name, code } = error;
   console.log(name);
   console.log(code);
