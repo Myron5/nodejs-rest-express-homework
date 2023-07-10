@@ -70,7 +70,7 @@ const verify = async (req, res) => {
 const reverify = async (req, res) => {
   const { email } = req.body;
   const baseURL = `${req.protocol}://${req.get('host')}`;
-  const isVerified = verifyAgain(email, baseURL);
+  const isVerified = await verifyAgain(email, baseURL);
   if (isVerified) {
     throw HttpError(400, 'Verification has already been passed');
   }
