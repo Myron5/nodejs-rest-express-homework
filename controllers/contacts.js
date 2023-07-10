@@ -1,5 +1,5 @@
-const contacts = require("../models/contacts.js");
-const { HttpError, ctrlWrapper } = require("../helpers");
+const contacts = require('../models/contacts.js');
+const { HttpError, ctrlWrapper } = require('../helpers');
 
 const getAll = async (req, res) => {
   const { _id } = req.user;
@@ -24,7 +24,7 @@ const deleteById = async (req, res) => {
   if (!result) {
     throw HttpError(404);
   }
-  res.json({ message: "contact deleted" });
+  res.json({ message: 'Contact deleted' });
 };
 
 const add = async (req, res) => {

@@ -1,14 +1,17 @@
-const jwt = require("jsonwebtoken");
-const { authWrapper } = require("../helpers");
-const { User } = require("../models/user");
+const jwt = require('jsonwebtoken');
+
+const { authWrapper } = require('../helpers');
+const { isVerifiedEmail } = require('./');
+const { User } = require('../models/user');
 
 const { SECRET_JWT_KEY } = process.env;
 
-const authenticate = async (req, res, next) => {
-  const { authorization = "" } = req.headers;
+const authenticate = async (req, _, next) => {
+  isVerifiedEmail(req, _, next);
 
-  const [bearer, token] = authorization.split(" ");
-  if (bearer !== "Bearer") {
+  const { authorization = '' } = req.headers;
+  const [bearer, token] = authorization.split(' ');
+  if (bearer !== 'Bearer') {
     throw new Error();
   }
 

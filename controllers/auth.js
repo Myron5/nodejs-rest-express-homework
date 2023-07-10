@@ -1,12 +1,21 @@
 const jwt = require('jsonwebtoken');
 
-const { addUser, checkUser, updateJwtToken, updateAvatar, updateAvatarCloud } = require('../models/user');
+const {
+  addUser,
+  checkUser,
+  updateJwtToken,
+  updateAvatar,
+  updateAvatarCloud,
+  setVerified,
+  verifyAgain,
+} = require('../models/user');
 const { HttpError, ctrlWrapper } = require('../helpers');
 
 const { SECRET_JWT_KEY } = process.env;
 
 const register = async (req, res) => {
-  const { email, subscription } = await addUser(req.body);
+  const baseURL = `${req.protocol}://${req.get('host')}`;
+  const { email, subscription } = await addUser(req.body, baseURL);
   res.status(201).json({ user: { email, subscription } });
 };
 
@@ -44,9 +53,28 @@ const avatarsCloud = async (req, res) => {
   const { path } = req.file;
   const avatarURL = await updateAvatarCloud(_id, path);
   if (!avatarURL) {
-    throw new HttpError(502);
+    throw HttpError(502);
   }
   res.json({ avatarURL });
+};
+
+const verify = async (req, res) => {
+  const { verificationToken } = req.params;
+  const user = await setVerified(verificationToken);
+  if (!user) {
+    throw HttpError(404, 'User not found');
+  }
+  res.json({ message: 'Verification successful' });
+};
+
+const reverify = async (req, res) => {
+  const { email } = req.body;
+  const baseURL = `${req.protocol}://${req.get('host')}`;
+  const isVerified = verifyAgain(email, baseURL);
+  if (isVerified) {
+    throw HttpError(400, 'Verification has already been passed');
+  }
+  res.json({ message: 'Resended successfully' });
 };
 
 module.exports = {
@@ -56,4 +84,6 @@ module.exports = {
   logout: ctrlWrapper(logout),
   avatars: ctrlWrapper(avatars),
   avatarsCloud: ctrlWrapper(avatarsCloud),
+  verify: ctrlWrapper(verify),
+  reverify: ctrlWrapper(reverify),
 };

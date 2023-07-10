@@ -5,6 +5,7 @@ const { createHashPassword, compareHashPassword } = require('./createHashPasswor
 const authWrapper = require('./authWrapper');
 const moveImage = require('./moveImage');
 const loadToCloudinary = require('./loadToCloudinary');
+const getViewsHTML = require('./getViewsHTML');
 
 module.exports = {
   HttpError,
@@ -15,4 +16,5 @@ module.exports = {
   authWrapper,
   moveImage,
   loadToCloudinary,
+  getViewsHTML,
 };

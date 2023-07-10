@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const gravatar = require('gravatar');
+const crypto = require('node:crypto');
 
 const { handleMongooseError, createHashPassword, compareHashPassword } = require('../helpers');
 const { passwordRegex, emailRegex, gravatarConfig, mongooseSchemaConfig } = require('../constants');
@@ -8,10 +9,9 @@ const { passwordRegex, emailRegex, gravatarConfig, mongooseSchemaConfig } = requ
  * Describes schema
  */
 const schema = {
-  password: {
+  avatarURL: {
     type: String,
-    match: passwordRegex,
-    required: [true, 'Set password for user'],
+    default: '',
   },
   email: {
     type: String,
@@ -19,16 +19,27 @@ const schema = {
     required: [true, 'Email is required'],
     unique: true,
   },
+  password: {
+    type: String,
+    match: passwordRegex,
+    required: [true, 'Set password for user'],
+  },
   subscription: {
     type: String,
     enum: ['starter', 'pro', 'business'],
     default: 'starter',
   },
+
   token: {
     type: String,
     default: '',
   },
-  avatarURL: {
+
+  verify: {
+    type: Boolean,
+    default: false,
+  },
+  verificationToken: {
     type: String,
     default: '',
   },
@@ -47,12 +58,14 @@ async function preSaveMiddleware(next) {
   if (!this.isModified('password')) {
     return next();
   }
+
   this.password = await createHashPassword(this.password);
+  this.verificationToken = crypto.randomUUID();
   next();
 }
 
 /**
- * Method for user (returned by our model)
+ * Method for user check (returned by our model)
  */
 async function checkPassword(candidate) {
   return await compareHashPassword(candidate, this.password);
@@ -62,7 +75,6 @@ async function checkPassword(candidate) {
  * Creating schema
  */
 const userDbSchema = new mongoose.Schema(schema, mongooseSchemaConfig);
-
 userDbSchema.pre('save', preSaveMiddleware);
 userDbSchema.post('save', handleMongooseError);
 userDbSchema.methods.checkPassword = checkPassword;
