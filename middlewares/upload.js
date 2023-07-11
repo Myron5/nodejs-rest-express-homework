@@ -6,9 +6,7 @@ const { limitFileAvatar } = require('../constants');
 const tempDir = path.join(__dirname, '../', 'tmp');
 
 const multerStorage = multer.diskStorage({
-  destination: callback => {
-    callback(null, tempDir);
-  },
+  destination: tempDir,
   filename: (req, file, callback) => {
     const [_, extension] = file.mimetype.split('/');
     const { _id } = req.user;
@@ -17,7 +15,7 @@ const multerStorage = multer.diskStorage({
   },
 });
 
-const multerFilter = (req, file, callback) => {
+const multerFilter = (_, file, callback) => {
   if (file.mimetype.includes('image/')) {
     callback(null, true);
   } else {

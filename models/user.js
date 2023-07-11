@@ -2,8 +2,7 @@ const mongoose = require('mongoose');
 const path = require('node:path');
 
 const { userDbSchema } = require('../schemas');
-const { moveImage, loadToCloudinary } = require('../helpers');
-const Email = require('../services/emailService');
+const { Email, Image } = require('../services');
 
 const User = mongoose.model('user', userDbSchema);
 const avatarsDir = path.join(__dirname, '../', 'public', 'avatars');
@@ -16,11 +15,12 @@ const checkEmail = async email => {
 
 const addUser = async (user, baseURL) => {
   const newUser = await User.create(user);
-  // Sending email verification
   const url = `${baseURL}/api/users/verify/${newUser.verificationToken}`;
+
+  // *-* Email Service *-*
   const emailService = new Email(newUser.email, url);
   emailService.sendVerification();
-  // -------------------------
+
   return newUser;
 };
 
@@ -39,14 +39,21 @@ const updateJwtToken = async (id, token) => {
 
 const updateAvatar = async (id, tmpUpload, filename) => {
   const resultUpload = path.join(avatarsDir, filename);
-  await moveImage(tmpUpload, resultUpload);
+
+  // *-* Image Service *-*
+  const imageService = new Image(tmpUpload);
+  await imageService.moveImage(resultUpload);
+
   const avatarURL = `/avatars/${filename}`;
   await User.findByIdAndUpdate(id, { avatarURL });
   return avatarURL;
 };
 
 const updateAvatarCloud = async (id, tmpUpload) => {
-  const avatarURL = await loadToCloudinary(id, tmpUpload);
+  // *-* Image Service *-*
+  const imageService = new Image(tmpUpload);
+  const avatarURL = await imageService.loadToCloudinary(id);
+
   if (!avatarURL) {
     return null;
   }
@@ -61,11 +68,11 @@ const setVerified = async verificationToken => {
 const verifyAgain = async (email, baseURL) => {
   const { verify, verificationToken } = await User.findOne({ email });
   if (!verify) {
-    // Sending email verification
     const url = `${baseURL}/api/users/verify/${verificationToken}`;
+
+    // *-* Email Service *-*
     const emailService = new Email(email, url);
     emailService.sendVerification();
-    // -------------------------
   }
   return verify;
 };

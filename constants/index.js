@@ -2,7 +2,6 @@ const { mixToRegexp, phoneRegexOne, phoneRegexTwo, passwordRegex, emailRegex } =
 const { imageConfig, cloudinaryConfig } = require('./cloudinaryConfig');
 const gravatarConfig = require('./gravatarConfig');
 const mongooseSchemaConfig = require('./mongooseSchemaConfig');
-const jimpManipulations = require('./jimpManipulations');
 const brevoConfig = require('./brevoConfig');
 const mailtrapConfig = require('./mailtrapConfig');
 
@@ -18,7 +17,6 @@ module.exports = {
   cloudinaryConfig,
   gravatarConfig,
   mongooseSchemaConfig,
-  jimpManipulations,
   limitFileAvatar,
   brevoConfig,
   mailtrapConfig,

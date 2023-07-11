@@ -2,9 +2,6 @@ const HttpError = require('./HttpError');
 const ctrlWrapper = require('./ctrlWrapper');
 const handleMongooseError = require('./handleMongooseError');
 const { createHashPassword, compareHashPassword } = require('./createHashPassword');
-const authWrapper = require('./authWrapper');
-const moveImage = require('./moveImage');
-const loadToCloudinary = require('./loadToCloudinary');
 const getViewsHTML = require('./getViewsHTML');
 
 module.exports = {
@@ -13,8 +10,5 @@ module.exports = {
   handleMongooseError,
   createHashPassword,
   compareHashPassword,
-  authWrapper,
-  moveImage,
-  loadToCloudinary,
   getViewsHTML,
 };
