@@ -3,6 +3,7 @@ const ctrlWrapper = require('./ctrlWrapper');
 const handleMongooseError = require('./handleMongooseError');
 const { createHashPassword, compareHashPassword } = require('./createHashPassword');
 const getViewsHTML = require('./getViewsHTML');
+const getBaseURL = require('./getBaseURL');
 
 module.exports = {
   HttpError,
@@ -11,4 +12,5 @@ module.exports = {
   createHashPassword,
   compareHashPassword,
   getViewsHTML,
+  getBaseURL,
 };

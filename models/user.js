@@ -37,14 +37,14 @@ const updateJwtToken = async (id, token) => {
   await User.findByIdAndUpdate(id, { token });
 };
 
-const updateAvatar = async (id, tmpUpload, filename) => {
+const updateAvatar = async (id, tmpUpload, filename, baseURL) => {
   const resultUpload = path.join(avatarsDir, filename);
 
   // *-* Image Service *-*
   const imageService = new Image(tmpUpload);
   await imageService.moveImage(resultUpload);
 
-  const avatarURL = `/avatars/${filename}`;
+  const avatarURL = `${baseURL}/avatars/${filename}`;
   await User.findByIdAndUpdate(id, { avatarURL });
   return avatarURL;
 };

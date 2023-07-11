@@ -9,13 +9,12 @@ const {
   setVerified,
   verifyAgain,
 } = require('../models/user');
-const { HttpError, ctrlWrapper } = require('../helpers');
+const { HttpError, ctrlWrapper, getBaseURL } = require('../helpers');
 
 const { SECRET_JWT_KEY } = process.env;
 
 const register = async (req, res) => {
-  const baseURL = `${req.protocol}://${req.get('host')}`;
-  const { email, subscription } = await addUser(req.body, baseURL);
+  const { email, subscription } = await addUser(req.body, getBaseURL(req));
   res.status(201).json({ user: { email, subscription } });
 };
 
@@ -44,7 +43,7 @@ const logout = async (req, res) => {
 const avatars = async (req, res) => {
   const { _id } = req.user;
   const { path, filename } = req.file;
-  const avatarURL = await updateAvatar(_id, path, filename);
+  const avatarURL = await updateAvatar(_id, path, filename, getBaseURL(req));
   res.json({ avatarURL });
 };
 
@@ -58,7 +57,7 @@ const avatarsCloud = async (req, res) => {
   res.json({ avatarURL });
 };
 
-const verify = async (req, res) => {
+const verifyEmail = async (req, res) => {
   const { verificationToken } = req.params;
   const user = await setVerified(verificationToken);
   if (!user) {
@@ -67,10 +66,9 @@ const verify = async (req, res) => {
   res.json({ message: 'Verification successful' });
 };
 
-const reverify = async (req, res) => {
+const resendVerifyEmail = async (req, res) => {
   const { email } = req.body;
-  const baseURL = `${req.protocol}://${req.get('host')}`;
-  const isVerified = await verifyAgain(email, baseURL);
+  const isVerified = await verifyAgain(email, getBaseURL(req));
   if (isVerified) {
     throw HttpError(400, 'Verification has already been passed');
   }
@@ -84,6 +82,6 @@ module.exports = {
   logout: ctrlWrapper(logout),
   avatars: ctrlWrapper(avatars),
   avatarsCloud: ctrlWrapper(avatarsCloud),
-  verify: ctrlWrapper(verify),
-  reverify: ctrlWrapper(reverify),
+  verifyEmail: ctrlWrapper(verifyEmail),
+  resendVerifyEmail: ctrlWrapper(resendVerifyEmail),
 };
