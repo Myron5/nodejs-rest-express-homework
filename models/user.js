@@ -19,9 +19,9 @@ const addUser = async (user, baseURL) => {
 
   // *-* Email Service *-*
   const emailService = new Email(newUser.email, url);
-  emailService.sendVerification();
+  const sended = emailService.sendVerification();
 
-  return newUser;
+  return [newUser, sended];
 };
 
 const checkUser = async ({ email, password }) => {
@@ -66,15 +66,19 @@ const setVerified = async verificationToken => {
 };
 
 const verifyAgain = async (email, baseURL) => {
-  const { verify, verificationToken } = await User.findOne({ email });
-  if (!verify) {
-    const url = `${baseURL}/api/users/verify/${verificationToken}`;
-
-    // *-* Email Service *-*
-    const emailService = new Email(email, url);
-    emailService.sendVerification();
+  const user = await User.findOne({ email });
+  if (!user) {
+    return [true, true]; // Щоб не було витоку інформації
+  } else if (user.verify) {
+    return [null, null];
   }
-  return verify;
+  const url = `${baseURL}/api/users/verify/${user.verificationToken}`;
+
+  // *-* Email Service *-*
+  const emailService = new Email(email, url);
+  const sended = emailService.sendVerification();
+
+  return [true, sended];
 };
 
 module.exports = {

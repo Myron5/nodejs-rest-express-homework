@@ -4,7 +4,7 @@ const errorMessageList = Object.freeze({
   403: 'Forbidden',
   404: 'Not found',
   409: 'Conflict',
-  502: 'Bad Gateway',
+  503: 'Service Unavailable',
 });
 
 const HttpError = (status, message = errorMessageList[status]) => {

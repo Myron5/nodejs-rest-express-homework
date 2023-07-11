@@ -27,7 +27,12 @@ class Email {
   }
 
   async sendVerification() {
-    await this._send('emailTemplate.pug', 'Email verification');
+    try {
+      await this._send('emailTemplate.pug', 'Email verification');
+      return true;
+    } catch {
+      return null;
+    }
   }
 }
 

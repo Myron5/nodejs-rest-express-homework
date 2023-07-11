@@ -14,7 +14,10 @@ const { HttpError, ctrlWrapper, getBaseURL } = require('../helpers');
 const { SECRET_JWT_KEY } = process.env;
 
 const register = async (req, res) => {
-  const { email, subscription } = await addUser(req.body, getBaseURL(req));
+  const [{ email, subscription }, sended] = await addUser(req.body, getBaseURL(req));
+  if (!sended) {
+    throw HttpError(503, 'Email service is unavailable');
+  }
   res.status(201).json({ user: { email, subscription } });
 };
 
@@ -52,7 +55,7 @@ const avatarsCloud = async (req, res) => {
   const { path } = req.file;
   const avatarURL = await updateAvatarCloud(_id, path);
   if (!avatarURL) {
-    throw HttpError(502);
+    throw HttpError(503, 'Image service is unavailable');
   }
   res.json({ avatarURL });
 };
@@ -68,9 +71,11 @@ const verifyEmail = async (req, res) => {
 
 const resendVerifyEmail = async (req, res) => {
   const { email } = req.body;
-  const isVerified = await verifyAgain(email, getBaseURL(req));
-  if (isVerified) {
+  const [virificationMissed, sended] = await verifyAgain(email, getBaseURL(req));
+  if (!virificationMissed) {
     throw HttpError(400, 'Verification has already been passed');
+  } else if (!sended) {
+    throw HttpError(503, 'Email service is unavailable');
   }
   res.json({ message: 'Resended successfully' });
 };
