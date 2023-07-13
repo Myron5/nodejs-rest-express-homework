@@ -11,7 +11,7 @@ const {
 } = require('../models/user');
 const { HttpError, ctrlWrapper, getBaseURL } = require('../helpers');
 
-const { SECRET_JWT_KEY } = process.env;
+const { SECRET_JWT_KEY, EXPIRES_IN } = process.env;
 
 const register = async (req, res) => {
   const [{ email, subscription }, sended] = await addUser(req.body, getBaseURL(req));
@@ -25,10 +25,11 @@ const login = async (req, res) => {
   const user = await checkUser(req.body);
   if (!user) {
     throw HttpError(401, 'Email or password is wrong');
+  } else if (user.token) {
+    throw HttpError(409, 'Logout first');
   }
   const { _id, email, subscription } = user;
-  const token = jwt.sign({ _id }, SECRET_JWT_KEY, { expiresIn: '24h' });
-
+  const token = jwt.sign({ _id }, SECRET_JWT_KEY, { expiresIn: EXPIRES_IN });
   await updateJwtToken(_id, token);
   res.json({ token, user: { email, subscription } });
 };
