@@ -6,9 +6,9 @@ const { validateBody, isUniqueEmail, isVerifiedEmail, authenticate, upload, isVa
 
 const router = express.Router();
 
-router.post('/register', isUniqueEmail, validateBody(registerLoginSchema), ctrl.register);
+router.post('/register', validateBody(registerLoginSchema), isUniqueEmail, ctrl.register);
 
-router.post('/login', isVerifiedEmail, validateBody(registerLoginSchema), ctrl.login);
+router.post('/login', validateBody(registerLoginSchema), isVerifiedEmail, ctrl.login);
 
 router.get('/current', authenticate, ctrl.current);
 

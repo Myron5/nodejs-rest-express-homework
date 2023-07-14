@@ -26,7 +26,7 @@ const addUser = async (user, baseURL) => {
 
 const checkUser = async ({ email, password }) => {
   const user = await User.findOne({ email });
-  const compared = user.checkPassword(password);
+  const compared = await user.checkPassword(password);
   if (!user || !compared) {
     return null;
   }
