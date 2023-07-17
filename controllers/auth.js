@@ -74,7 +74,7 @@ const resendVerifyEmail = async (req, res) => {
   const { email } = req.body;
   const [virificationMissed, sended] = await verifyAgain(email, getBaseURL(req));
   if (!virificationMissed) {
-    throw HttpError(400, 'Verification has already been passed');
+    throw HttpError(409, 'Verification has already been passed');
   } else if (!sended) {
     throw HttpError(503, 'Email service is unavailable');
   }
